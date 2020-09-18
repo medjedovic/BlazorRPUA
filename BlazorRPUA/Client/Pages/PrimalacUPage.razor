@@ -1,0 +1,232 @@
+﻿@page "/PU"
+@using BlazorRPUA.Shared
+@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager NM
+
+
+<div class="mat-layout-grid">
+    <div class="mat-layout-grid-inner border-top border-bottom">
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6 rounded-lg">
+            <div class="card">
+                <h4 class="card-header">Formular o primaocu usluga</h4>
+                <div class="card-body">
+                    <h5 class="card-title">Podaci za primaoca usluga</h5>
+                    <p class="card-text">
+                        <EditForm Model="PU" OnSubmit="PrimalacUslugeIS">
+                            <div class="text-field-container">
+                                <MatTextField @bind-Value="@PU.Ime" Label="ime primaoca usluge:" Icon="face" FullWidth="true"></MatTextField>
+                            </div>
+                            <div class="text-field-container">
+                                <MatTextField @bind-Value="@PU.Prezime" Label="prezime primaoca usluge:" Icon="face" Outlined="true"></MatTextField>
+                            </div>
+                            <div class="text-field-container">
+                                <MatTextField @bind-Value="@PU.KontaktTel" Label="kontakt tel. primaoca usluge:" Icon="phone" Outlined="true"></MatTextField>
+                            </div>
+                            <hr /><MatOverline>Kodakt primaoca usluge:</MatOverline>
+                            <div class="text-field-container">
+                                <MatTextField @bind-Value="@PU.Email" Label="email primaoca usluge:" Icon="mail_outline" Outlined="true"></MatTextField>
+                            </div>
+                            <div class="text-field-container">
+                                <MatTextField @bind-Value="@PU.Adresa.Ulica" Label="ulica primaoca usluge:" Icon="map" Outlined="true"></MatTextField>
+                            </div>
+                            <div class="text-field-container">
+                                <MatTextField @bind-Value="@PU.Adresa.Broj" Label="broj primaoca usluge:" Icon="x" Outlined="true"></MatTextField>
+                            </div>
+                            <div class="text-field-container">
+                                <MatTextField @bind-Value="@PU.Adresa.PosBroj" Icon="x" Label="postanski broj primaoca usluge:" Outlined="true"></MatTextField>
+                            </div>
+                            <div class="text-field-container">
+                                <MatTextField @bind-Value="@PU.Adresa.Grad" Icon="x" Label="grad primaoca usluge:" Outlined="true"></MatTextField>
+                            </div>
+                            <div class="text-field-container">
+                                <MatTextField @bind-Value="@PU.Adresa.Drzava" Icon="x" Label="država:" Outlined="true"></MatTextField>
+                            </div>
+                            <MatButton Raised="true" TrailingIcon="done_all" type="submit">snimi</MatButton>
+                        </EditForm>
+                    </p>
+
+                </div>
+            </div>
+        </div>
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6 d-flex">
+            <img src="/img/CareDF.jpg" class="img-fluid img-thumbnail float-right" alt="">
+        </div>
+    </div>
+</div>
+
+<br />
+<br />
+<br />
+
+<div class="col-md-3 mb-3">
+    <label class="control-label">Pretraga</label>
+    <input class="form-control" @bind="TPretraga" placeholder="Pretraga" />
+    <small id="nameHelp" class="form-text text-muted">pretraga</small>
+    <button class="btn btn-block btn-success" @onclick="pretrazi">Pretraži</button>
+</div>
+<br />
+<br />
+@if (ListaPrimalacU.Count > 0)
+{
+    <MatTable Items="@ListaPrimalacU" class="mat-elevation-z5">
+        <MatTableHeader>
+            <th>#ID</th>
+            <th>Ime</th>
+            <th>Prezime</th>
+            <th>Kontakt tel.</th>
+            <th>Email</th>
+            <th>Adresa</th>
+            <th>Akcija</th>
+        </MatTableHeader>
+        <MatTableRow>
+            <td>@context.ID</td>
+            <td>@context.Ime</td>
+            <td>@context.Prezime</td>
+            <td>@context.KontaktTel</td>
+            <td>@context.Email</td>
+            <td>@context.Adresa.Ulica br: @context.Adresa.Broj </td>
+            <td>
+                <button class="btn btn-outline-info oi oi-pencil" @onclick="() => PrimalacUslugeI(context)"> </button> |
+                <button class="btn btn btn-outline-danger oi oi-trash" @onclick="() => PrimalacUslugeB(context)"> </button>
+            </td>
+        </MatTableRow>
+    </MatTable>
+
+
+    @*stari način pozivanja tabele preko foreach*@
+    @*<table class='table'>
+            <thead>
+                <tr>
+                    <th>Primalac usluge ID</th>
+                    <th>Ime</th>
+                    <th>Prezime</th>
+                    <th>Kontakt tel.</th>
+                    <th>Email</th>
+                    <th>Adresa</th>
+                    <th>AKCIJA</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (PrimalacUsluga PUL in ListaPrimalacU)
+                {
+                    <tr>
+                        <td>@PUL.ID</td>
+                        <td>@PUL.Ime</td>
+                        <td>@PUL.Prezime</td>
+                        <td>@PUL.KontaktTel</td>
+                        <td>@PUL.Email</td>
+                        <td>@PUL.Adresa.Ulica br.:@PUL.Adresa.Broj</td>
+                        <td>
+                            <button class="btn btn-outline-info oi oi-pencil"> </button> |
+                            <button class="btn btn btn-outline-danger oi oi-trash" @onclick="() => PrimalacUslugeB(PUL)"> </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>*@
+}
+else
+{
+    <p>Ne postoje podaci o primaocima usluga</p>
+}
+
+
+<MatDialog @bind-IsOpen="@dialogIsOpen">
+    <MatDialogTitle>Greška</MatDialogTitle>
+    <MatDialogContent>
+        <p>Greška pri unosu?</p>
+        <h1>@errm</h1>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@OkClick">OK</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+
+
+
+@code {
+
+    HubConnection PUHC;
+
+    PrimalacUsluga PU = new PrimalacUsluga { Adresa = new Adresa() };
+
+
+    public List<PrimalacUsluga> ListaPrimalacU = new List<PrimalacUsluga>();
+    public string errm;
+
+    protected override async Task OnInitializedAsync()
+    {
+        PUHC = new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("PrimalacUHub")).Build();
+
+        //metoda koja će primiti poruku servera o duplim podacima
+        PUHC.On<string>("duplikatGreska", err => {
+            errm = err;
+            dialogIsOpen = true;
+        });
+
+
+        //PUHC.SendAsync("ispisPrimalacAdrese");
+
+        PUHC.On<List<PrimalacUsluga>>("PrimalacUslugaCL", lpu =>
+        {
+            ListaPrimalacU = lpu;
+            Console.WriteLine(lpu[0].Ime + " adresa:" + lpu[0].Adresa.Ulica);
+            StateHasChanged();
+        });
+
+        await PUHC.StartAsync();
+
+        await PUHC.SendAsync("UcitajPrimalacUslugaData");
+
+
+    }
+
+    //metoda za brisanje primaoca usluge
+    public async Task PrimalacUslugeB(PrimalacUsluga PU)
+    {
+        await PUHC.SendAsync("PrimalacUslugeB", PU);
+        PU = new PrimalacUsluga();
+        await PUHC.SendAsync("UcitajPrimalacUslugaData");
+    }
+
+
+    public async Task PrimalacUslugeIS()
+    {
+        await PUHC.SendAsync("PrimalacUslugaIS", PU);
+        PU = new PrimalacUsluga { Adresa = new Adresa() };
+        await PUHC.SendAsync("UcitajPrimalacUslugaData");
+    }
+
+
+    public void PrimalacUslugeI(PrimalacUsluga PUS)
+    {
+        PU = PUS;
+        StateHasChanged();
+    }
+
+
+    private string TPretraga;
+
+    public void pretrazi()
+    {
+        //Console.WriteLine(TPretraga+" unijeti string");
+        PUHC.SendAsync("UcitajPrimalacUslugaP", TPretraga);
+    }
+
+    bool dialogIsOpen = false;
+
+
+    void OpenDialog()
+    {
+
+        dialogIsOpen = true;
+    }
+
+    void OkClick()
+    {
+
+        dialogIsOpen = false;
+    }
+}
