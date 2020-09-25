@@ -5,26 +5,27 @@ using System.Linq;
 using System.Threading.Tasks;
 using BlazorRPUA.Shared;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using IdentityServer4.EntityFramework.Options;
 
 namespace BlazorRPUA.Server
 {
     public class EFDB: DbContext
     {
 
-        public EFDB()
+        public EFDB(DbContextOptions options) : base(options)
         {
-
         }
 
-        //konstruktori da bi koristili appsettings.json
-        //public EFDB(IConfiguration configuration)
-        //{
-        //    Configuration = configuration;
-        //}
-        //public IConfiguration Configuration { get; }
+    //konstruktori da bi koristili appsettings.json
+    //public EFDB(IConfiguration configuration)
+    //{
+    //    Configuration = configuration;
+    //}
+    //public IConfiguration Configuration { get; }
 
-        //db set klasa koje koristimo
-        public DbSet<PrimalacUsluga> PrimalacUslugas { get; set; }
+    //db set klasa koje koristimo
+    public DbSet<PrimalacUsluga> PrimalacUslugas { get; set; }
         public DbSet<Adresa> Adresas { get; set; }
 
         //definisanje ključeva za kreirane db setove
@@ -44,11 +45,11 @@ namespace BlazorRPUA.Server
 
 
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            //optionsBuilder.UseSqlServer(Configuration["DB"]);
-            optionsBuilder.UseSqlServer(@"Data Source=EM-THINKPAD;Initial Catalog=DBCareRPUA;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
-        }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    //optionsBuilder.UseSqlServer(Configuration["DB"]);
+        //    //optionsBuilder.UseSqlServer(@"Data Source=EM-THINKPAD;Initial Catalog=DBCareRPUA;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+        //}
 
 
     }

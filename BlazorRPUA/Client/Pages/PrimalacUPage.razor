@@ -133,17 +133,26 @@ else
 
 
 <MatDialog @bind-IsOpen="@dialogIsOpen">
-    <MatDialogTitle>Greška</MatDialogTitle>
+    <MatDialogTitle>Naslov</MatDialogTitle>
     <MatDialogContent>
-        <p>Greška pri unosu?</p>
-        <h1>@errm</h1>
+
+        <h3>@msg</h3>
     </MatDialogContent>
     <MatDialogActions>
         <MatButton OnClick="@OkClick">OK</MatButton>
     </MatDialogActions>
 </MatDialog>
 
-
+@*<MatDialog @bind-IsOpen="@dialogIsOpen1">
+        <MatDialogTitle>DOGAĐAJ</MatDialogTitle>
+        <MatDialogContent>
+            <p>Da li ste sigurni da želite da obrišete podatke?</p>
+        </MatDialogContent>
+        <MatDialogActions>
+            <MatButton OnClick="@(e => {dialogIsOpen1 = false;})">NE</MatButton>
+            <MatButton OnClick="@() => PrimalacUslugeB(context)">DA</MatButton>
+        </MatDialogActions>
+    </MatDialog>*@
 
 
 @code {
@@ -154,15 +163,16 @@ else
 
 
     public List<PrimalacUsluga> ListaPrimalacU = new List<PrimalacUsluga>();
-    public string errm;
+    public string msg;
 
     protected override async Task OnInitializedAsync()
     {
         PUHC = new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("PrimalacUHub")).Build();
 
         //metoda koja će primiti poruku servera o duplim podacima
-        PUHC.On<string>("duplikatGreska", err => {
-            errm = err;
+        PUHC.On<string>("porukaModal", msgm =>
+        {
+            msg = msgm;
             dialogIsOpen = true;
         });
 
@@ -215,8 +225,8 @@ else
         PUHC.SendAsync("UcitajPrimalacUslugaP", TPretraga);
     }
 
-    bool dialogIsOpen = false;
 
+    bool dialogIsOpen = false;
 
     void OpenDialog()
     {
@@ -228,5 +238,20 @@ else
     {
 
         dialogIsOpen = false;
+    }
+
+
+    bool dialogIsOpen1 = false;
+
+    void OpenDialog1()
+    {
+
+        dialogIsOpen1 = true;
+    }
+
+    void OkClick1()
+    {
+
+        dialogIsOpen1 = false;
     }
 }

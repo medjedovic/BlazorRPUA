@@ -1,9 +1,13 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 
 
@@ -22,6 +26,37 @@ namespace BlazorRPUA.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<EFDB>(options =>
+            options.UseSqlServer(
+                Configuration.GetConnectionString("EFDB")));
+
+
+            //DB kontext koji se odnosi na Identity
+            services.AddDbContext<EFDBID>(options =>
+            options.UseSqlServer(
+                Configuration.GetConnectionString("EFDB")));
+
+            //Ovdje koristimo IdentityUser IdentityRole
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddUserManager<UserManager<IdentityUser>>()
+                .AddSignInManager<SignInManager<IdentityUser>>()
+                .AddRoleManager<RoleManager<IdentityRole>>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<EFDBID>();
+
+            services.AddIdentityServer()
+                .AddApiAuthorization<IdentityUser, EFDBID>(options =>
+                {
+                    options.IdentityResources["openid"].UserClaims.Add("korisnicko");
+                    options.ApiResources.Single().UserClaims.Add("korisnicko");
+
+                    options.IdentityResources["openid"].UserClaims.Add("role");
+                    options.ApiResources.Single().UserClaims.Add("role");
+                });
+
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("role");
+
+            services.AddAuthentication().AddIdentityServerJwt();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -40,7 +75,9 @@ namespace BlazorRPUA.Server
             {
                 app.UseExceptionHandler("/Error");
             }
-
+            
+            //https nam je neophodan za bezbjednost
+            app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
 
