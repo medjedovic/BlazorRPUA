@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30503.244
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorRPUA.Server", "BlazorRPUA\Server\BlazorRPUA.Server.csproj", "{54BCACAF-8A8D-4A32-ADB8-7A54EA60F24A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorRPUA.Server", "BlazorRPUA\Server\BlazorRPUA.Server.csproj", "{54BCACAF-8A8D-4A32-ADB8-7A54EA60F24A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorRPUA.Client", "BlazorRPUA\Client\BlazorRPUA.Client.csproj", "{D68E9966-4CC7-4383-8504-5C8A2143155F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorRPUA.Client", "BlazorRPUA\Client\BlazorRPUA.Client.csproj", "{D68E9966-4CC7-4383-8504-5C8A2143155F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorRPUA.Shared", "BlazorRPUA\Shared\BlazorRPUA.Shared.csproj", "{DD25AF84-3DA5-4CBA-99EC-A81F4B54B654}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorRPUA.Shared", "BlazorRPUA\Shared\BlazorRPUA.Shared.csproj", "{DD25AF84-3DA5-4CBA-99EC-A81F4B54B654}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

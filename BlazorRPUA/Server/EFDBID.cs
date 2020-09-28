@@ -14,9 +14,7 @@ namespace BlazorRPUA.Server
     {
         public EFDBID(
             DbContextOptions<EFDBID> options,
-            IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
-        {
-        }
+            IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions) { }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

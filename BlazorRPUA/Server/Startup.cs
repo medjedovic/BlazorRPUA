@@ -89,6 +89,7 @@ namespace BlazorRPUA.Server
                 endpoints.MapControllers();
                 endpoints.MapFallbackToFile("index.html");
                 endpoints.MapHub<Hubs.PrimalacUHub>("PrimalacUHub");
+                endpoints.MapHub<Hubs.KorisnikIdHub>("KorisnikIdHub");
             });
         }
     }

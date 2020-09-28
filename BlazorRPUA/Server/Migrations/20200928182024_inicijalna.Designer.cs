@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorRPUA.Server.Migrations
 {
     [DbContext(typeof(EFDB))]
-    [Migration("20200918182820_unikatEmailKontaktTel")]
-    partial class unikatEmailKontaktTel
+    [Migration("20200928182024_inicijalna")]
+    partial class inicijalna
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

@@ -1,0 +1,35 @@
+﻿@page "/login"
+@using Microsoft.AspNetCore.SignalR.Client
+@using BlazorRPUA.Shared
+@using Microsoft.AspNetCore.Http
+@inject NavigationManager _nm
+@inject HttpClient _hc
+
+<h3>Login </h3>
+
+<p><b>@_greska</b></p>
+
+
+<EditForm Model="_reg" OnSubmit="LogIn">
+    <p>Ime:</p>
+    <InputText @bind-Value="_reg.Korisnicko" />
+    <p>Sifra:</p>
+    <InputText @bind-Value="_reg.Sifra" />
+    <p><button class="btn-primary" type="submit">Log in</button></p>
+</EditForm>
+
+
+@code
+{ 
+    private Korisnik _reg = new Korisnik();
+    private string _greska;
+
+    private async Task LogIn()
+    {
+        _greska = "";
+        if (await _hc.PostJsonAsync<bool>("LogIn", _reg))
+            _nm.NavigateTo("/", forceLoad: true);
+        else
+            _greska = "Ne dalje!";
+    } 
+}

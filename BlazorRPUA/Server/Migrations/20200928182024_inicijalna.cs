@@ -2,7 +2,7 @@
 
 namespace BlazorRPUA.Server.Migrations
 {
-    public partial class prva : Migration
+    public partial class inicijalna : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -56,10 +56,29 @@ namespace BlazorRPUA.Server.Migrations
                 columns: new[] { "ID", "Broj", "Drzava", "Grad", "PosBroj", "Ulica" },
                 values: new object[] { 2, "BB", "Srbija", "Novi Pazar", "36300", "Kragujevačka" });
 
+            migrationBuilder.InsertData(
+                table: "PrimalacUslugas",
+                columns: new[] { "ID", "AdresaID", "Email", "Ime", "KontaktTel", "Prezime" },
+                values: new object[] { 1, null, "esad@dr.com", "Esad", "063614616", "Međedović" });
+
             migrationBuilder.CreateIndex(
                 name: "IX_PrimalacUslugas_AdresaID",
                 table: "PrimalacUslugas",
                 column: "AdresaID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PrimalacUslugas_Email",
+                table: "PrimalacUslugas",
+                column: "Email",
+                unique: true,
+                filter: "[Email] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PrimalacUslugas_KontaktTel",
+                table: "PrimalacUslugas",
+                column: "KontaktTel",
+                unique: true,
+                filter: "[KontaktTel] IS NOT NULL");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

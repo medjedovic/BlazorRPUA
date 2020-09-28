@@ -8,127 +8,129 @@ using System.Threading.Tasks;
 
 namespace BlazorRPUA.Server.Hubs
 {
-    public class PrimalacUHub: Hub
+    public class PrimalacUHub : Hub
     {
+
+
         //public void printss()
         //{
         //    Console.WriteLine("Javlja se primalac usluga HUB!!!!");
         //}
 
-        //public void ispisPrimalacAdrese()
-        //{
-        //    EFDB db = new EFDB();
-        //    db.Adresas.ToList();
-        //    var pu = db.PrimalacUslugas.First();
-        //    Console.WriteLine($"Prvi korisnik je: Ime:{pu.Ime}\n Prezime:{pu.Prezime}\n Ulica:{pu.Adresa.Ulica}!!!!");
-            
-        //}
+        private readonly EFDB db;
+        public PrimalacUHub(EFDB baza)
+        {
+            db = baza;
+        }
+
+        public void ispisPrimalacAdrese()
+        {
+            db.Adresas.ToList();
+            var pu = db.PrimalacUslugas.First();
+            Console.WriteLine($"Prvi korisnik je: Ime:{pu.Ime}\n Prezime:{pu.Prezime}\n Ulica:{pu.Adresa.Ulica}!!!!");
+        }
 
 
         //čitanje postojećih podataka iz baze
-    //    public async Task UcitajPrimalacUslugaData()
-    //    {
-    //        EFDB db = new EFDB();
-    //        db.Adresas.ToList();
-    //        await Clients.Caller.SendAsync("PrimalacUslugaCL", db.PrimalacUslugas.ToList());
-    //    }
+        public async Task UcitajPrimalacUslugaData()
+        {
+            db.Adresas.ToList();
+            await Clients.Caller.SendAsync("PrimalacUslugaCL", db.PrimalacUslugas.ToList());
+        }
 
-    //    //metoda za brisanje selektovanog objekta
-    //    public void PrimalacUslugeB(PrimalacUsluga PU)
-    //    {
-    //        try
-    //        {
-    //            EFDB db = new EFDB();
-    //            db.PrimalacUslugas.Remove(PU);
-    //            db.SaveChanges();
-    //            UcitajPrimalacUslugaData();
-    //            Clients.Caller.SendAsync("porukaModal", $"Uspešno ste obrisali podatke!");
-    //        }
-    //        catch (Exception ex)
-    //        {
-    //            Clients.Caller.SendAsync("porukaModal", $"GREŠA!\n {ex.Message}");
-    //            //Console.WriteLine("Takvi podaci Već POSTOJE U BAZI PODATAKA!" + ex.Message);
-    //        }
-            
-    //    }
+        //metoda za brisanje selektovanog objekta
+        public void PrimalacUslugeB(PrimalacUsluga PU)
+        {
+            try
+            {
+                db.PrimalacUslugas.Remove(PU);
+                db.SaveChanges();
+                UcitajPrimalacUslugaData();
+                Clients.Caller.SendAsync("porukaModal", $"Uspešno ste obrisali podatke!");
+            }
+            catch (Exception ex)
+            {
+                Clients.Caller.SendAsync("porukaModal", $"GREŠA!\n {ex.Message}");
+                //Console.WriteLine("Takvi podaci Već POSTOJE U BAZI PODATAKA!" + ex.Message);
+            }
+
+        }
 
 
-    //    public async Task PrimalacUslugaIS(PrimalacUsluga PU)
-    //    {
-    //        //Console.WriteLine($"Primalac usluga koji se šalje na snimanje:{PU.Ime}, Ulica:{PU.Adresa.Ulica} br.:{PU.Adresa.Broj}");
-    //        EFDB db = new EFDB();
+        public async Task PrimalacUslugaIS(PrimalacUsluga PU)
+        {
+            //Console.WriteLine($"Primalac usluga koji se šalje na snimanje:{PU.Ime}, Ulica:{PU.Adresa.Ulica} br.:{PU.Adresa.Broj}");
 
-    //        //pronalaženje id od PruzalacUsluga u tabeli ako NE postoji njegov ID dodaj novi poslani zapis odnosno objekat PU
-    //        var UCur = db.PrimalacUslugas.Find(PU.ID);
-    //        if (UCur == null)
-    //        {
-    //            try
-    //            {
-    //                db.PrimalacUslugas.Add(PU);
-    //                Clients.Caller.SendAsync("porukaModal", $"Uspešno ste unijeli podatke!");
-    //            }
-    //            catch (Exception ex)
-    //            {
-    //                Clients.Caller.SendAsync("porukaModal", $"GREŠA!\n {ex.Message}");
-    //                //Console.WriteLine("Takvi podaci Već POSTOJE U BAZI PODATAKA!" + ex.Message);
-    //            }
-                
-    //        }
-    //        else
-    //        //ukoliko postoji PruzalacUsluga sa tim ID-jem onda obriši postojeći i dodaj novi sa postojećim podacima
-    //        //drugim riječima izmijeni postojeći
-    //        {
-    //            try
-    //            {
-    //                db.PrimalacUslugas.Remove(UCur);
-    //                db.PrimalacUslugas.Add(PU);
+            //pronalaženje id od PruzalacUsluga u tabeli ako NE postoji njegov ID dodaj novi poslani zapis odnosno objekat PU
+            var UCur = db.PrimalacUslugas.Find(PU.ID);
+            if (UCur == null)
+            {
+                try
+                {
+                    db.PrimalacUslugas.Add(PU);
+                    Clients.Caller.SendAsync("porukaModal", $"Uspešno ste unijeli podatke!");
+                }
+                catch (Exception ex)
+                {
+                    Clients.Caller.SendAsync("porukaModal", $"GREŠA!\n {ex.Message}");
+                    //Console.WriteLine("Takvi podaci Već POSTOJE U BAZI PODATAKA!" + ex.Message);
+                }
 
-    //                var adr = db.Adresas.Find(PU.Adresa.ID);
-    //                adr.Ulica = PU.Adresa.Ulica;
-    //                adr.Broj = PU.Adresa.Broj;
-    //                adr.PosBroj = PU.Adresa.PosBroj;
-    //                adr.Grad = PU.Adresa.Grad;
-    //                adr.Drzava = PU.Adresa.Drzava;
+            }
+            else
+            //ukoliko postoji PruzalacUsluga sa tim ID-jem onda obriši postojeći i dodaj novi sa postojećim podacima
+            //drugim riječima izmijeni postojeći
+            {
+                try
+                {
+                    db.PrimalacUslugas.Remove(UCur);
+                    db.PrimalacUslugas.Add(PU);
 
-    //                //brisanje podataka stare adrese i dodavanje unete
-    //                //ovo radi samo pri relaciji jedan na jedan
-    //                //db.Adresas.Remove(UCur.Adresa);
-    //                //db.Adresas.Add(PU.Adresa);
+                    var adr = db.Adresas.Find(PU.Adresa.ID);
+                    adr.Ulica = PU.Adresa.Ulica;
+                    adr.Broj = PU.Adresa.Broj;
+                    adr.PosBroj = PU.Adresa.PosBroj;
+                    adr.Grad = PU.Adresa.Grad;
+                    adr.Drzava = PU.Adresa.Drzava;
+
+                    //brisanje podataka stare adrese i dodavanje unete
+                    //ovo radi samo pri relaciji jedan na jedan
+                    //db.Adresas.Remove(UCur.Adresa);
+                    //db.Adresas.Add(PU.Adresa);
 
 
 
-    //                //PU.Adresa = db.Adresas.Find(PU.Adresa.ID);
+                    //PU.Adresa = db.Adresas.Find(PU.Adresa.ID);
 
 
-    //                Clients.Caller.SendAsync("porukaModal", $"Uspešno ste izmijenili podatke!");
-    //            }
-    //            catch (Exception ex)
-    //            {
-    //                Clients.Caller.SendAsync("porukaModal", $"GREŠA!\n {ex.Message}");
-    //                //Console.WriteLine("Takvi podaci Već POSTOJE U BAZI PODATAKA!" + ex.Message);
-    //            }
-                
-    //        }
-    //        try
-    //        {
-    //            await db.SaveChangesAsync();
-    //        }
-    //        catch (Exception ex)
-    //        {
-    //            Clients.Caller.SendAsync("porukaModal", $"Takvi podaci Već POSTOJE U BAZI PODATAKA!\n {ex.Message}");
-    //            //Console.WriteLine("Takvi podaci Već POSTOJE U BAZI PODATAKA!"+ ex.Message);
-    //        }
-            
-    //    }
+                    Clients.Caller.SendAsync("porukaModal", $"Uspešno ste izmijenili podatke!");
+                }
+                catch (Exception ex)
+                {
+                    Clients.Caller.SendAsync("porukaModal", $"GREŠA!\n {ex.Message}");
+                    //Console.WriteLine("Takvi podaci Već POSTOJE U BAZI PODATAKA!" + ex.Message);
+                }
 
-    //    public async Task UcitajPrimalacUslugaP(string _pretraga)
-    //    {
-    //        EFDB db = new EFDB();
-    //        db.Adresas.ToList();
+            }
+            try
+            {
+                await db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Clients.Caller.SendAsync("porukaModal", $"Takvi podaci Već POSTOJE U BAZI PODATAKA!\n {ex.Message}");
+                //Console.WriteLine("Takvi podaci Već POSTOJE U BAZI PODATAKA!"+ ex.Message);
+            }
 
-    //        //probati metodu koju smo uradili u klasi
-    //        await Clients.Caller.SendAsync("PrimalacUslugaCL", db.PrimalacUslugas.Where(p => p.Ime.ToLower().Contains(_pretraga.ToLower()) ||
-    //                                                                                         p.Prezime.ToLower().Contains(_pretraga.ToLower())).ToList());
-    //    }
+        }
+
+        public async Task UcitajPrimalacUslugaP(string _pretraga)
+        {
+            db.Adresas.ToList();
+
+            //probati metodu koju smo uradili u klasi
+            await Clients.Caller.SendAsync("PrimalacUslugaCL", db.PrimalacUslugas.Where(p => p.Ime.ToLower().Contains(_pretraga.ToLower()) ||
+                                                                                             p.Prezime.ToLower().Contains(_pretraga.ToLower())).ToList());
+        }
     }
 }

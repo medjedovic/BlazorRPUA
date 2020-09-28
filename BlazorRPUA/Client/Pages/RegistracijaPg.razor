@@ -1,0 +1,81 @@
+﻿@page "/reg"
+@using Microsoft.AspNetCore.SignalR.Client
+@using BlazorRPUA.Shared
+@inject NavigationManager _nm
+
+<h3>Registracija</h3>
+
+@if (_greske.Any())
+{
+<p><b>Greske:</b></p>
+                <ul>
+                    @foreach (string greska in _greske)
+                    {
+    <li>@greska</li>
+}
+                </ul>
+}
+
+<EditForm Model="_reg" OnSubmit="Registruj">
+    <p>Ime:</p>
+    <InputText @bind-Value="_reg.Korisnicko" />
+    <p>Mejl:</p>
+    <InputText @bind-Value="_reg.Mail" />
+    <p>Sifra:</p>
+    <InputText @bind-Value="_reg.Sifra" />
+    <p>Rola:</p>
+    <p>
+        <select @bind="_reg.Rola">
+            @foreach (string role in _roles)
+            {
+<option>@role</option>
+}
+        </select>
+    </p>
+    <p><button class="btn-primary" type="submit">Registruj se:</button></p>
+</EditForm>
+
+
+@code
+{ 
+    private Korisnik _reg = new Korisnik();
+    private List<string> _roles = new List<string>();
+    private List<string> _greske = new List<string>();
+    private HubConnection _hc;
+
+            protected override async Task OnInitializedAsync()
+            {
+                _hc = new HubConnectionBuilder().WithUrl(_nm.ToAbsoluteUri("KorisnikIdHub")).Build();
+
+                _hc.On<List<string>>("RecRoles", (roles) =>
+                {
+                    _roles = roles;
+                    StateHasChanged();
+                });
+
+                _hc.On<bool, List<string>>("RegResult", (uspeh, greske) =>
+                {
+                    if (uspeh)
+                        _nm.NavigateTo("login");
+                    else
+                    {
+                        _greske = greske;
+                        StateHasChanged();
+                    }
+                });
+
+                await _hc.StartAsync();
+                await _hc.SendAsync("GetRoles");
+            }
+
+            private async Task Registruj()
+            {
+                _greske = new List<string>();
+
+                if (string.IsNullOrEmpty(_reg.Rola))
+                    _reg.Rola = _roles[0]; //dumbass select
+
+                await _hc.SendAsync("Register", _reg);
+                _reg = new Korisnik();
+            } }
+
