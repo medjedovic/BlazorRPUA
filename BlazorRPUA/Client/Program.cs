@@ -1,9 +1,13 @@
 using System;
 using System.Net.Http;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.DependencyInjection;
+using System.Text;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication.Internal;
 using System.Security.Claims;
 using System.Text.Json;
@@ -27,7 +31,8 @@ namespace BlazorRPUA.Client
         }
     }
 
-    public class RolesFactory: AccountClaimsPrincipalFactory<RemoteUserAccount>
+    public class RolesFactory
+        : AccountClaimsPrincipalFactory<RemoteUserAccount>
     {
         public RolesFactory(IAccessTokenProviderAccessor accessor)
             : base(accessor)

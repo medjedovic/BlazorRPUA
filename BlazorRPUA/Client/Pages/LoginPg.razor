@@ -27,7 +27,7 @@
     private async Task LogIn()
     {
         _greska = "";
-        if (await _hc.PostJsonAsync<bool>("LogIn", _reg))
+        if (await _hc.PostJsonAsync<bool>("Login", _reg))
             _nm.NavigateTo("/", forceLoad: true);
         else
             _greska = "Ne dalje!";

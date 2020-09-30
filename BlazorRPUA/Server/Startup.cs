@@ -1,15 +1,17 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-
 
 namespace BlazorRPUA.Server
 {
@@ -45,22 +47,21 @@ namespace BlazorRPUA.Server
                 .AddEntityFrameworkStores<EFDBID>();
 
             services.AddIdentityServer()
-                .AddApiAuthorization<IdentityUser, EFDBID>(options =>
-                {
-                    options.IdentityResources["openid"].UserClaims.Add("korisnicko");
-                    options.ApiResources.Single().UserClaims.Add("korisnicko");
-
+                .AddApiAuthorization<IdentityUser, EFDBID>(options => {
+                    options.IdentityResources["openid"].UserClaims.Add("name");
+                    options.ApiResources.Single().UserClaims.Add("name");
                     options.IdentityResources["openid"].UserClaims.Add("role");
                     options.ApiResources.Single().UserClaims.Add("role");
                 });
 
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("role");
 
-            services.AddAuthentication().AddIdentityServerJwt();
+            services.AddAuthentication()
+                .AddIdentityServerJwt();
 
+            services.AddSignalR();
             services.AddControllersWithViews();
             services.AddRazorPages();
-            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -74,8 +75,9 @@ namespace BlazorRPUA.Server
             else
             {
                 app.UseExceptionHandler("/Error");
+                app.UseHsts();
             }
-            
+
             //https nam je neophodan za bezbjednost
             app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();
@@ -83,13 +85,18 @@ namespace BlazorRPUA.Server
 
             app.UseRouting();
 
+            //neohodni servisi koje koristi aplikacija za identity
+            app.UseIdentityServer();
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
-                endpoints.MapFallbackToFile("index.html");
                 endpoints.MapHub<Hubs.PrimalacUHub>("PrimalacUHub");
                 endpoints.MapHub<Hubs.KorisnikIdHub>("KorisnikIdHub");
+                endpoints.MapFallbackToFile("index.html");
             });
         }
     }

@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace BlazorRPUA.Server.Controllers
 {
-   
 	[ApiController]
 	[Route("[controller]")]
 	public class LogoutController : ControllerBase
