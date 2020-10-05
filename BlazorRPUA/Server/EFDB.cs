@@ -34,10 +34,10 @@ namespace BlazorRPUA.Server
         modelBuilder.Entity<PrimalacUsluga>().HasKey(p => p.ID);
         modelBuilder.Entity<Adresa>().HasKey(a => a.ID);
 
-        modelBuilder.Entity<Adresa>().HasData(new Adresa {ID=1, Ulica = "Mehmeda Alibašića", Broj ="13", Grad="Novi Pazar", PosBroj="36300", Drzava="Srbija"});
-        modelBuilder.Entity<Adresa>().HasData(new Adresa {ID=2, Ulica = "Kragujevačka", Broj ="BB", Grad="Novi Pazar", PosBroj="36300", Drzava="Srbija"});
+        //modelBuilder.Entity<Adresa>().HasData(new Adresa {ID=1, Ulica = "Mehmeda Alibašića", Broj ="13", Grad="Novi Pazar", PosBroj="36300", Drzava="Srbija"});
+        //modelBuilder.Entity<Adresa>().HasData(new Adresa {ID=2, Ulica = "Kragujevačka", Broj ="BB", Grad="Novi Pazar", PosBroj="36300", Drzava="Srbija"});
             
-        modelBuilder.Entity<PrimalacUsluga>().HasData(new PrimalacUsluga { ID=1, Ime = "Esad", Prezime ="Međedović", KontaktTel="063614616", Email="esad@dr.com"});
+        //modelBuilder.Entity<PrimalacUsluga>().HasData(new PrimalacUsluga { ID=1, Ime = "Esad", Prezime ="Međedović", KontaktTel="063614616", Email="esad@dr.com"});
 
         modelBuilder.Entity<PrimalacUsluga>().HasIndex(i => i.Email).IsUnique();
         modelBuilder.Entity<PrimalacUsluga>().HasIndex(i => i.KontaktTel).IsUnique();

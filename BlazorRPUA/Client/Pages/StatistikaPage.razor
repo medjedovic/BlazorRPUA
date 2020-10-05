@@ -1,9 +1,10 @@
-﻿@page "/PU"
+﻿@page "/STAT"
 @using BlazorRPUA.Shared
 @using Microsoft.AspNetCore.SignalR.Client
 @inject NavigationManager NM
-@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Admin")]
+@attribute [Microsoft.AspNetCore.Authorization.Authorize (Roles ="Manager")]
 
+<h1>OVO JE STRANA STATISTIKE I MOŽE JOJ PRISTUPITI SAMO MENADŽER</h1>
 <div class="mat-layout-grid">
     <div class="mat-layout-grid-inner border-top border-bottom">
         <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6 rounded-lg">
@@ -14,32 +15,32 @@
                     <p class="card-text">
                         <EditForm Model="PU" OnSubmit="PrimalacUslugeIS">
                             <div class="text-field-container">
-                                <MatTextField @bind-Value="PU.Ime" Label="ime primaoca usluge:" Icon="face" FullWidth="true"></MatTextField>
+                                <MatTextField @bind-Value="@PU.Ime" Label="ime primaoca usluge:" Icon="face" FullWidth="true"></MatTextField>
                             </div>
                             <div class="text-field-container">
-                                <MatTextField @bind-Value="PU.Prezime" Label="prezime primaoca usluge:" Icon="face" Outlined="true"></MatTextField>
+                                <MatTextField @bind-Value="@PU.Prezime" Label="prezime primaoca usluge:" Icon="face" Outlined="true"></MatTextField>
                             </div>
                             <div class="text-field-container">
-                                <MatTextField @bind-Value="PU.KontaktTel" Label="kontakt tel. primaoca usluge:" Icon="phone" Outlined="true"></MatTextField>
+                                <MatTextField @bind-Value="@PU.KontaktTel" Label="kontakt tel. primaoca usluge:" Icon="phone" Outlined="true"></MatTextField>
                             </div>
                             <hr /><MatOverline>Kodakt primaoca usluge:</MatOverline>
                             <div class="text-field-container">
-                                <MatTextField @bind-Value="PU.Email" Label="email primaoca usluge:" Icon="mail_outline" Outlined="true"></MatTextField>
+                                <MatTextField @bind-Value="@PU.Email" Label="email primaoca usluge:" Icon="mail_outline" Outlined="true"></MatTextField>
                             </div>
                             <div class="text-field-container">
-                                <MatTextField @bind-Value="PU.Adresa.Ulica" Label="ulica primaoca usluge:" Icon="map" Outlined="true"></MatTextField>
+                                <MatTextField @bind-Value="@PU.Adresa.Ulica" Label="ulica primaoca usluge:" Icon="map" Outlined="true"></MatTextField>
                             </div>
                             <div class="text-field-container">
-                                <MatTextField @bind-Value="PU.Adresa.Broj" Label="broj primaoca usluge:" Icon="x" Outlined="true"></MatTextField>
+                                <MatTextField @bind-Value="@PU.Adresa.Broj" Label="broj primaoca usluge:" Icon="x" Outlined="true"></MatTextField>
                             </div>
                             <div class="text-field-container">
-                                <MatTextField @bind-Value="PU.Adresa.PosBroj" Icon="x" Label="postanski broj primaoca usluge:" Outlined="true"></MatTextField>
+                                <MatTextField @bind-Value="@PU.Adresa.PosBroj" Icon="x" Label="postanski broj primaoca usluge:" Outlined="true"></MatTextField>
                             </div>
                             <div class="text-field-container">
-                                <MatTextField @bind-Value="PU.Adresa.Grad" Icon="x" Label="grad primaoca usluge:" Outlined="true"></MatTextField>
+                                <MatTextField @bind-Value="@PU.Adresa.Grad" Icon="x" Label="grad primaoca usluge:" Outlined="true"></MatTextField>
                             </div>
                             <div class="text-field-container">
-                                <MatTextField @bind-Value="PU.Adresa.Drzava" Icon="x" Label="država:" Outlined="true"></MatTextField>
+                                <MatTextField @bind-Value="@PU.Adresa.Drzava" Icon="x" Label="država:" Outlined="true"></MatTextField>
                             </div>
                             <MatButton Raised="true" TrailingIcon="done_all" type="submit">snimi</MatButton>
                         </EditForm>
@@ -92,44 +93,44 @@
         </MatTableRow>
     </MatTable>
 
+
+    @*stari način pozivanja tabele preko foreach*@
+    @*<table class='table'>
+            <thead>
+                <tr>
+                    <th>Primalac usluge ID</th>
+                    <th>Ime</th>
+                    <th>Prezime</th>
+                    <th>Kontakt tel.</th>
+                    <th>Email</th>
+                    <th>Adresa</th>
+                    <th>AKCIJA</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (PrimalacUsluga PUL in ListaPrimalacU)
+                {
+                    <tr>
+                        <td>@PUL.ID</td>
+                        <td>@PUL.Ime</td>
+                        <td>@PUL.Prezime</td>
+                        <td>@PUL.KontaktTel</td>
+                        <td>@PUL.Email</td>
+                        <td>@PUL.Adresa.Ulica br.:@PUL.Adresa.Broj</td>
+                        <td>
+                            <button class="btn btn-outline-info oi oi-pencil"> </button> |
+                            <button class="btn btn btn-outline-danger oi oi-trash" @onclick="() => PrimalacUslugeB(PUL)"> </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>*@
 }
 else
 {
     <p>Ne postoje podaci o primaocima usluga</p>
 }
-
-@*stari način pozivanja tabele preko foreach*@
-@*<table class='table'>
-        <thead>
-            <tr>
-                <th>Primalac usluge ID</th>
-                <th>Ime</th>
-                <th>Prezime</th>
-                <th>Kontakt tel.</th>
-                <th>Email</th>
-                <th>Adresa</th>
-                <th>AKCIJA</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            @foreach (PrimalacUsluga PUL in ListaPrimalacU)
-            {
-                <tr>
-                    <td>@PUL.ID</td>
-                    <td>@PUL.Ime</td>
-                    <td>@PUL.Prezime</td>
-                    <td>@PUL.KontaktTel</td>
-                    <td>@PUL.Email</td>
-                    <td>@PUL.Adresa.Ulica br.:@PUL.Adresa.Broj</td>
-                    <td>
-                        <button class="btn btn-outline-info oi oi-pencil"> </button> |
-                        <button class="btn btn btn-outline-danger oi oi-trash" @onclick="() => PrimalacUslugeB(PUL)"> </button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>*@
 
 
 <MatDialog @bind-IsOpen="@dialogIsOpen">
@@ -159,7 +160,7 @@ else
 
     HubConnection PUHC;
 
-    PrimalacUsluga PU;
+    PrimalacUsluga PU = new PrimalacUsluga { Adresa = new Adresa() };
 
 
     public List<PrimalacUsluga> ListaPrimalacU = new List<PrimalacUsluga>();
@@ -168,7 +169,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         PUHC = new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("PrimalacUHub")).Build();
-        PU = new PrimalacUsluga { Adresa = new Adresa() };
+
         //metoda koja će primiti poruku servera o duplim podacima
         PUHC.On<string>("porukaModal", msgm =>
         {
@@ -204,14 +205,7 @@ else
 
     public async Task PrimalacUslugeIS()
     {
-        if(PU.ID == 0)
-        {
-            await PUHC.SendAsync("PrimalacUslugaIS", PU);
-        }
-        else
-        {
-            await PUHC.SendAsync("updatePodataka", PU);
-        }
+        await PUHC.SendAsync("PrimalacUslugaIS", PU);
         PU = new PrimalacUsluga { Adresa = new Adresa() };
         await PUHC.SendAsync("UcitajPrimalacUslugaData");
     }

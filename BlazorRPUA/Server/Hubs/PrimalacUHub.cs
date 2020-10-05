@@ -83,25 +83,14 @@ namespace BlazorRPUA.Server.Hubs
             {
                 try
                 {
-                    db.PrimalacUslugas.Remove(UCur);
-                    db.PrimalacUslugas.Add(PU);
-
-                    var adr = db.Adresas.Find(PU.Adresa.ID);
-                    adr.Ulica = PU.Adresa.Ulica;
-                    adr.Broj = PU.Adresa.Broj;
-                    adr.PosBroj = PU.Adresa.PosBroj;
-                    adr.Grad = PU.Adresa.Grad;
-                    adr.Drzava = PU.Adresa.Drzava;
-
+                    db.PrimalacUslugas.Update(PU);
+                    
                     //brisanje podataka stare adrese i dodavanje unete
                     //ovo radi samo pri relaciji jedan na jedan
                     //db.Adresas.Remove(UCur.Adresa);
                     //db.Adresas.Add(PU.Adresa);
-
-
-
+                    
                     //PU.Adresa = db.Adresas.Find(PU.Adresa.ID);
-
 
                     Clients.Caller.SendAsync("porukaModal", $"Uspešno ste izmijenili podatke!");
                 }
@@ -122,6 +111,12 @@ namespace BlazorRPUA.Server.Hubs
                 //Console.WriteLine("Takvi podaci Već POSTOJE U BAZI PODATAKA!"+ ex.Message);
             }
 
+        }
+
+        public void updatePodataka(PrimalacUsluga PU) 
+        {
+            db.Update(PU);
+            db.SaveChanges();
         }
 
         public async Task UcitajPrimalacUslugaP(string _pretraga)
